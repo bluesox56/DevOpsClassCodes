@@ -44,13 +44,13 @@ pipeline {
             }
          
         }
-        stage('Build docker image'){
-            agent any
-            steps{
-                script{
+ //       stage('Build docker image'){
+ //           agent any
+ //           steps{
+ //               script{
                     
-    }
-}
-        }
+//    }
+// }
+//        }
     }
 }
