@@ -1,56 +1,49 @@
-#!/usr/bin/env groovy
-def gv
 pipeline {
-    agent none
+    agent any
 
     tools {
-        // Install the Maven version configured as "M3" and add it to the path.
         jdk 'myjava'
-        maven 'mymaven'
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "mymaven"
     }
 
     stages {
-        stage('Compile') {
-            agent any
+        stage('Checkout') {
             steps {
-                script{
-                    git 'https://github.com/devops-trainer/DevOpsClassCodes.git'
-                   gv = load "script.groovy"
-                    gv.compile()
-                }
-                
+                // Get some code from a GitHub repository
+                git 'https://github.com/devops-trainer/DevOpsClassCodes.git'
             }
-        }
-        stage('UnitTest') {
-           
-            agent any
+        }    
+    stage('Compile') {
             steps {
-               script{
-                  gv = load "script.groovy"
-                   gv.UnitTest()
-               }
-                
+                // Get some code from a GitHub repository
+                sh 'mvn compile'
             }
-           
-        }
-        stage('Package') {
-            agent any
+        }  
+    stage('codereview') {
             steps {
-                script{
-                      gv = load "script.groovy"
-                    gv.package()
-                }
-                
+                // Get some code from a GitHub repository
+                sh 'mvn pmd:pmd'
             }
-         
-        }
- //       stage('Build docker image'){
- //           agent any
- //           steps{
- //               script{
-                    
-//    }
-// }
-//        }
+        }    
+    stage('UnitTest') {
+            steps {
+                // Get some code from a GitHub repository
+                sh 'mvn test'
+            }
+        }    
+     stage('MetricCheck') {
+            steps {
+                // Get some code from a GitHub repository
+                sh 'mvn cobertura:cobertura -Dcobertura.report.format=xml'
+            }
+        }  
+     stage('Package') {
+            steps {
+                // Get some code from a GitHub repository
+                sh 'mvn package'
+            }
+        }       
+        
     }
 }
